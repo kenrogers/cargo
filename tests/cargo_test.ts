@@ -1,6 +1,6 @@
 
 import { Clarinet, Tx, Chain, Account, types } from 'https://deno.land/x/clarinet@v0.14.0/index.ts';
-import { assertEquals, assertObjectMatch } from 'https://deno.land/std@0.90.0/testing/asserts.ts';
+import { assertEquals } from 'https://deno.land/std@0.90.0/testing/asserts.ts';
 
 Clarinet.test({
     name: "A user should be able to successfully create a new shipment",
@@ -15,7 +15,6 @@ Clarinet.test({
                 [types.ascii('Denver'), types.principal(receiver)],
                 shipper
             )
-
         ]);
         const result = block.receipts[0].result;
         // Check for the success message
@@ -143,12 +142,12 @@ Clarinet.test({
         const newShipment = chain.callReadOnlyFn(
             'cargo',
             'get-shipment',
-            [types.uint(1)],
+            [types.uint(3)],
             receiver
         )
         // Now we want to check and see if this returns the shipment tuple we are expecting
         const expectedShipment = newShipment.result
-        expectedShipment.expectTuple()
-        assertEquals(expectedShipment, `{location: "Denver", receiver: ${receiver}, shipper: ${shipper}, status: "In Transit"}`)
+        expectedShipment.expectOk()
+        assertEquals(expectedShipment, `(ok {location: "Denver", receiver: ${receiver}, shipper: ${shipper}, status: "In Transit"})`)
     },
 });

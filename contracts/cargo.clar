@@ -41,5 +41,5 @@
 
 ;; read only functions
 (define-read-only (get-shipment (shipment-id uint))
-    (unwrap! (map-get? shipments shipment-id) {status: "Does not exist"})
+    (ok (unwrap! (map-get? shipments shipment-id) err-shipment-not-found))
 )
