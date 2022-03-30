@@ -17,6 +17,7 @@ Clarinet.test({
             )
         ]);
         const result = block.receipts[0].result;
+        console.log(block)
         // Check for the success message
         result.expectOk().expectAscii('Shipment created successfully')
     },
@@ -142,7 +143,7 @@ Clarinet.test({
         const newShipment = chain.callReadOnlyFn(
             'cargo',
             'get-shipment',
-            [types.uint(3)],
+            [types.uint(1)],
             receiver
         )
         // Now we want to check and see if this returns the shipment tuple we are expecting
