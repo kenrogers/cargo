@@ -4,7 +4,7 @@ import {
   Chain,
   Account,
   types,
-} from "https://deno.land/x/clarinet@v0.14.0/index.ts";
+} from "https://deno.land/x/clarinet@v0.31.0/index.ts";
 import { assertEquals } from "https://deno.land/std@0.90.0/testing/asserts.ts";
 
 Clarinet.test({
@@ -245,4 +245,27 @@ Clarinet.test({
       `(ok {location: "Denver", receiver: ${receiver}, shipper: ${shipper}, status: "In Transit"})`
     );
   },
+});
+
+import fc
+  from 'https://cdn.skypack.dev/fast-check@3.0.0';
+
+import { CargoCommands }
+  from './model-based/CargoCommands.ts'
+
+Clarinet.test({
+  name: 'Cargo V1 generated tests',
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const initialChain = { chain: chain };
+    const initialModel = {
+      shipments: new Map<number, Record<string, string>>(),
+      currentId: 0
+    };
+    fc.assert(fc.property(
+      CargoCommands(accounts), (cmds: []) => {
+        const initialState = () =>
+          ({ model: initialModel, real: initialChain });
+        fc.modelRun(initialState, cmds);
+    }), { numRuns: 10, verbose: true });
+  }
 });
